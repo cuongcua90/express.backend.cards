@@ -16,7 +16,6 @@ exports.login = function(req, res, next) {
  */
 
 exports.signup = function(req, res, next) {
-  console.log(req.body);
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
@@ -24,7 +23,7 @@ exports.signup = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-    return res.status(401).send(errors);
+    return res.status(400).json(errors);
   }
 
   var user = new User({
@@ -32,15 +31,36 @@ exports.signup = function(req, res, next) {
     password: req.body.password
   });
 
-  User.findOne({ email: req.body.email }, function(err, existingUser) {
-    if (existingUser) {
-      return res.status(404).send('Account is exist');
+  user.save(function(err) {
+    if (err) {
+      switch (err.code) {
+        case 11000:
+        case 11001:
+          return res.status(400).json([{
+            msg: 'email already taken',
+            param: 'email',
+            value: req.body.email
+          }]);
+          break;
+        default:
+          var modelErrors = [];
+
+          if (err.errors) {
+
+            for (var x in err.errors) {
+              modelErrors.push({
+                param: x,
+                msg: err.errors[x].message,
+                value: err.errors[x].value
+              });
+            }
+            return res.status(400).json(modelErrors);
+          }
+      }
     }
-    user.save(function(err) {
-      if (err) return next(err);
-      return res.status(200).send('Create success');
-    });
+    return res.status(200).json({msg: 'create success'});
   });
+
 };
 
 
