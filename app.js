@@ -24,7 +24,6 @@ var secrets = require('./config/secrets');
 
 
 var app = express();
-app.use(bodyParser());
 
 /**
  * Controllers (route handlers).
@@ -47,7 +46,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
-
 /**
  * Main routes
  */
