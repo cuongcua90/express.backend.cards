@@ -12,34 +12,53 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var expressValidator = require('express-validator');
 
+/** 
+ * Express Api and secret
+ */
+var secrets = require('./config/secrets');
 
 /*
  * Controllers
  */
-var userController = require('./controllers/user');
+//var userController = require('./controllers/user');
 
 
 var app = express();
 app.use(bodyParser());
 
 /**
+ * Controllers (route handlers).
+ */
+var userController = require('./controllers/user');
+
+/**
+ * Connect to mongodb
+ */
+mongoose.connect(secrets.db);
+mongoose.connection.on('error', function() {
+  console.error('MongoDB Connection Error. Please make sure that MongoDB is running.');
+});
+
+/**
+ * Express configuration
+ */
+app.set('port', process.env.PORT || 3000);
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressValidator());
+
+/**
  * Main routes
  */
-app.get('/', homeController.index);
-app.post('/login', userController.postLogin);
-app.get('/forgot', userController.getForgot);
-app.post('/forgot', userController.postForgot);
-app.post('/reset/:token', userController.postReset);
-app.post('/signup', userController.postSignup);
-app.get('/account', passportConf.isAuthenticated, userController.getAccount);
-app.post('/account/profile', passportConf.isAuthenticated, userController.postUpdateProfile);
-app.post('/account/password', passportConf.isAuthenticated, userController.postUpdatePassword);
-app.post('/account/delete', passportConf.isAuthenticated, userController.postDeleteAccount);
-app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
+app.post('/login', userController.login);
+app.get('/login', userController.login);
+app.post('/forgot', userController.forgot);
+app.post('/signup', userController.signup);
 
 
-app.listen(3000, function() {
-	console.log('Listeing on port 3000 ....');
+app.listen(app.get('port'), function() {
+  console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
 });
 
 module.exports = app;
