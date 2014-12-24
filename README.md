@@ -1,9 +1,9 @@
 ##Styles guide:
 =============
   * 'space size: 2'
-  * "'use strict': to use strict mode"
+  * 'use strict': to use strict mode
   * https://github.com/airbnb/javascript
-  * https://developers.google.com/closure/utilities/ for IDE.
+  * https://developers.google.com/closure/utilities/ linter for IDE.
 
 ##Install:
   * 'npm install'
