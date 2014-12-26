@@ -50,7 +50,6 @@ app.use(expressValidator());
  * Main routes
  */
 app.post('/login', userController.login);
-app.get('/login', userController.login);
 app.post('/forgot', userController.forgot);
 app.post('/signup', userController.signup);
 

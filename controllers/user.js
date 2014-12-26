@@ -1,13 +1,63 @@
 var _ = require('underscore');
+var moment = require('moment');
+var jwt = require('jwt-simple');
+var request = require('request');
+var logger = require('morgan');
+
 var secrets = require('../config/secrets');
 var User = require('../models/User');
+
+
+/**
+ * Authenticated
+ */
+
+exports.authenticated = function(req, res, next) {
+  if (!req.headers.authorization) {
+    return res.status(401).send({ message: 'Please make sure your request has an Authorization header' });
+  }
+  var token = req.headers.authorization.split(' ')[1];
+  var payload = jwt.decode(token, config.TOKEN_SECRET);
+  if (payload.exp <= moment().unix()) {
+    return res.status(401).send({ message: 'Token has expired' });
+  }
+  req.user = payload.sub;
+  next();
+};
+
+
+/**
+ * create token
+ */
+
+function createToken(user) {
+  var payload = {
+    sub: user._id,
+    iat: moment().unix(),
+    exp: moment().add(14, 'days').unix()
+  };
+  return jwt.encode(payload, secrets.TOKEN_SECRET);
+}
+
+
 
 /**
  * POST /Login
  */
 
 exports.login = function(req, res, next) {
-  res.send('login');
+  User.findOne({email: req.body.email}, function(err, user) {
+    if (!user) {
+      return res.status(401).json([{ msg: 'Wrong email or password' }]);
+    }
+
+    user.comparePassword(req.body.password, function(err, isMatch) {
+      if (!isMatch) {
+        return res.status(401).json([{ msg: 'Wrong email or password' }]);
+      }
+      res.json({ token: createToken(user) });
+    });
+  });
 };
 
 
@@ -36,7 +86,7 @@ exports.signup = function(req, res, next) {
       switch (err.code) {
         case 11000:
         case 11001:
-          return res.status(400).json([{
+          return res.status(409).json([{
             msg: 'email already taken',
             param: 'email',
             value: req.body.email
@@ -58,7 +108,7 @@ exports.signup = function(req, res, next) {
           }
       }
     }
-    return res.status(200).json({msg: 'create success'});
+    return res.status(200).json({msg: 'user created  success'});
   });
 
 };
