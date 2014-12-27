@@ -6,6 +6,8 @@
   * https://developers.google.com/closure/utilities/ linter for IDE.
 
 ##Install:
+  * install mongodb
+  * run mongod
   * 'npm install'
   * 'node app.js'
   
