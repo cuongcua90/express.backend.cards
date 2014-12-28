@@ -29,6 +29,7 @@ var app = express();
  * Controllers (route handlers).
  */
 var userController = require('./controllers/user');
+var listController = require('./controllers/list');
 
 /**
  * Connect to mongodb
@@ -52,7 +53,11 @@ app.use(expressValidator());
 app.post('/login', userController.login);
 app.post('/forgot', userController.forgot);
 app.post('/signup', userController.signup);
+app.post('/lists', userController.authenticated, listController.postLists);
 
+app.get('/lists', userController.authenticated, listController.getLists);
+
+app.delete('/lists/:listId', userController.authenticated, listController.deleteLists);
 
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
