@@ -10,7 +10,6 @@ var List = require('../models/List');
  * @returns {*}
  */
 exports.postLists = function(req, res) {
-    console.log("" + req.body.title);
     req.assert('title', 'Title must not empty').notEmpty();
 
     var errors = req.validationErrors();
@@ -106,5 +105,38 @@ exports.deleteLists = function(req, res, next) {
 
     })
 }
+
+/**
+ * Check permission
+ */
+exports.checkPermission = function(req, res, next) {
+    var listId = req.param("listId");
+    List.findById(listId, function(err, list) {
+        if (err) {
+            switch (err.code) {
+                default:
+                    var modelErrors = [];
+                    if (err.errors) {
+                        for (var x in err.errors) {
+                            modelErrors.push({
+                                param: x,
+                                msg: err.errors[x].message,
+                                value: err.errors[x].value
+                            });
+                        }
+                        return res.status(400).json(modelErrors);
+                    }
+            }
+        }
+
+        if (list == null) return res.status(404).json({msg: "List not found"});
+
+        if (req.user != list.creator) {
+            return res.status(403).json({msg: "You do not have this permission"});
+        }
+    });
+    console.log("Run here");
+    next();
+};
 
 

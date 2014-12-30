@@ -30,6 +30,7 @@ var app = express();
  */
 var userController = require('./controllers/user');
 var listController = require('./controllers/list');
+var itemController = require('./controllers/item');
 
 /**
  * Connect to mongodb
@@ -54,8 +55,10 @@ app.post('/login', userController.login);
 app.post('/forgot', userController.forgot);
 app.post('/signup', userController.signup);
 app.post('/lists', userController.authenticated, listController.postLists);
+app.post('/items/:listId', userController.authenticated, listController.checkPermission, itemController.postItems);
 
 app.get('/lists', userController.authenticated, listController.getLists);
+app.get('/items/:listId', userController.authenticated, listController.checkPermission, itemController.getItems);
 
 app.delete('/lists/:listId', userController.authenticated, listController.deleteLists);
 
