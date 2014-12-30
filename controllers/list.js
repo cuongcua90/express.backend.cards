@@ -42,6 +42,7 @@ exports.postLists = function(req, res) {
                         return res.status(400).json(modelErrors);
                     }
             }
+            return res.status(500).json({msg: err.message});
         }
         return res.status(200).json({msg: 'list created  success'});
     });
@@ -64,6 +65,7 @@ exports.getLists = function(req, res, next) {
                         return res.status(400).json(modelErrors);
                     }
             }
+            return res.status(500).json({msg: err.message});
         }
         return res.status(200).json({lists: lists});
     });
@@ -87,6 +89,7 @@ exports.deleteLists = function(req, res, next) {
                         return res.status(400).json(modelErrors);
                     }
             }
+            return res.status(500).json({msg: err.message});
         }
 
         if (list == null) return res.status(404).json({msg: "List not found"});
@@ -127,6 +130,7 @@ exports.checkPermission = function(req, res, next) {
                         return res.status(400).json(modelErrors);
                     }
             }
+            return res.status(500).json({msg: err.message});
         }
 
         if (list == null) return res.status(404).json({msg: "List not found"});

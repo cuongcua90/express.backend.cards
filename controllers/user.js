@@ -17,6 +17,7 @@ exports.authenticated = function(req, res, next) {
     return res.status(401).send({ message: 'Please make sure your request has an Authorization header' });
   }
   var token = req.headers.authorization.split(' ')[1];
+  //TODO error here when try with invalid token "token"
   var payload = jwt.decode(token, secrets.TOKEN_SECRET);
   if (payload.exp <= moment().unix()) {
     return res.status(401).send({ message: 'Token has expired' });

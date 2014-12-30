@@ -61,6 +61,7 @@ app.get('/lists', userController.authenticated, listController.getLists);
 app.get('/items/:listId', userController.authenticated, listController.checkPermission, itemController.getItems);
 
 app.delete('/lists/:listId', userController.authenticated, listController.deleteLists);
+app.delete('/items/:listId', userController.authenticated, itemController.deleteItems);
 
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
