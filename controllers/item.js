@@ -7,13 +7,17 @@ exports.postItems = function(req, res) {
     var listId = req.param("listId");
     var words = req.body.words;
     var items = [];
-
+    if (words == undefined) {
+        return res.status(400).json({msg: "Make sure the format of request"});
+    }
     for (var i = 0; i < words.length; i++) {
         var item = new Item({
+            _id: "",
             word: words[i].toString(),
             listId: listId,
             createdDate: moment().unix()
         });
+        item._id = item.listId + "_" + item.word;
         items[i] = item;
     }
     console.log(items.length);

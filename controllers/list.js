@@ -138,9 +138,9 @@ exports.checkPermission = function(req, res, next) {
         if (req.user != list.creator) {
             return res.status(403).json({msg: "You do not have this permission"});
         }
+        
+        next();
     });
-    console.log("Run here");
-    next();
 };
 
 
