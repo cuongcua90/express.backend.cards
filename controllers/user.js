@@ -9,6 +9,14 @@ var User = require('../models/User');
 
 
 /**
+ * Home Page   
+ */
+exports.home = function(req, res, next) {
+  res.status(200).json({message: 'Successful deploy'});
+};
+
+
+/**
  * Authenticated
  */
 
