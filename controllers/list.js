@@ -26,7 +26,7 @@ exports.postLists = function(req, res) {
         createdDate: moment().unix()
     });
 
-    list.save(function(err) {
+    list.save(function(err, result) {
         if (err) {
             switch (err.code) {
                 default:
@@ -44,7 +44,7 @@ exports.postLists = function(req, res) {
             }
             return res.status(500).json({msg: err.message});
         }
-        return res.status(200).json({msg: 'list created  success'});
+        return res.status(200).json({msg: 'list created  success', id: result._id});
     });
 }
 

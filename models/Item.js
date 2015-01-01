@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var itemSchema = new mongoose.Schema({
-    word: {type: String, unique: true, lowercase: true},
+    word: {type: String, lowercase: true},
     listId: String,
     createdDate: Date
 });
