@@ -74,9 +74,12 @@ exports.getItems = function(req, res) {
     })
 }
 
-exports.deleteItems = function(req, res) {
+exports.deleteItem = function(req, res) {
     var listId = req.param("listId");
-    var word = req.body.word;
+    var word = req.param("word");
+    if (word === undefined) {
+        return res.status(400).json({msg: "Bad request"});
+    }
     Item.findOne({listId: listId, word: word}, function(err, item) {
         if (err) {
             switch (err.code) {
@@ -95,7 +98,7 @@ exports.deleteItems = function(req, res) {
             }
             return res.status(500).json({msg: err.message});
         }
-        if (item == null) return res.status(404).json({msg: "Word not found"});
+        if (item == undefined) return res.status(404).json({msg: "Word not found"});
         item.remove(function (err, item) {
             if (err) {
                 return res.status(500).json({msg: err.message});
