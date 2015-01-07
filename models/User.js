@@ -41,6 +41,13 @@ userSchema.pre('save', function(next) {
   });
 });
 
+userSchema.methods.toJSON = function() {
+  var obj = this.toObject();
+  delete obj.password;
+  delete resetPasswordExpires;
+  delete resetPasswordToken;
+  return obj;
+};
 /**
  * Helper method for validationg user's password.
  */

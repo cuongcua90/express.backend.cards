@@ -64,7 +64,7 @@ exports.login = function(req, res, next) {
       if (!isMatch) {
         return res.status(401).json([{ msg: 'Wrong email or password' }]);
       }
-      res.json({ token: createToken(user) });
+      res.json({ token: createToken(user), user: user});
     });
   });
 };

@@ -1,4 +1,4 @@
 module.exports = {
-	db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/test',
+	db: 'mongodb://testuser:testpass@kahana.mongohq.com:10069/piolist',
 	TOKEN_SECRET: 'generatedtokensecret'
 }
